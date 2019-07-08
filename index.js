@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const path = require('path')
 const program = require('commander')
 const PropertiesReader = require('properties-reader')
@@ -10,7 +9,7 @@ program
     .option('-r, --report <string>', 'Path to post-analysis sonar\'s report file')
     .parse(process.argv)
 
-const reportPath = path.resolve(__dirname, program.report)
+const reportPath = path.resolve(process.cwd(), program.report)
 if (!reportPath) {
     throw new Error(`Não foi possível encontrar o caminho: ${reportPath}`)
 }
