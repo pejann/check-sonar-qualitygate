@@ -39,11 +39,19 @@ const interval = setInterval(() => {
 
             } else if (pendingStatus.includes(result.task.status)) {
                 console.info('Análise ainda está pendente no SonarQube')
-                return result.task
+                return { continue: true }
 
             } else if (sucessStatus.includes(result.task.status)) {
                 console.info('Análise finalizada, buscando Quality Gate')
-                return result.task
+
+                const analysisId = result.task.analysisId
+                if (!analysisId) {
+                    throw new Error('Não foi possível recuperar o id da análise')
+                }
+
+                const qualityGateUrl = `${serverUrl}/api/qualitygates/project_status?analysisId=${analysisId}`
+
+                return request({ uri: qualityGateUrl, json: true })
 
             } else {
                 clearInterval(interval)
@@ -51,18 +59,11 @@ const interval = setInterval(() => {
             }
 
         })
-        .then(task => {
-            const analysisId = task.analysisId
-            if (!analysisId) {
-                throw new Error('Não foi possível recuperar o id da análise')
+        .then(response => {
+            if (response.continue) {
+                return;
             }
 
-            const qualityGateUrl = `${serverUrl}/api/qualitygates/project_status?analysisId=${analysisId}`
-
-            return request({ uri: qualityGateUrl, json: true })
-
-        })
-        .then(response => {
             if (!response || !response.projectStatus || !response.projectStatus.status) {
                 throw new Error('Não foi possível recuperar o status do projeto')
             }
