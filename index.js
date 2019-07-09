@@ -79,7 +79,8 @@ const interval = setInterval(() => {
 
         })
         .catch(err => {
-            throw new Error(err)
+            console.error(err)
+            process.exit(1)
         })
 
 }, 1000)
