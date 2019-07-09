@@ -42,7 +42,6 @@ const interval = setInterval(() => {
                 return result.task
 
             } else if (sucessStatus.includes(result.task.status)) {
-                clearInterval(interval)
                 console.info('Análise finalizada, buscando Quality Gate')
                 return result.task
 
