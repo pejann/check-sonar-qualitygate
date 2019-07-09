@@ -65,13 +65,16 @@ const interval = setInterval(() => {
             }
 
             if (!response || !response.projectStatus || !response.projectStatus.status) {
+                clearInterval(interval)
                 throw new Error('Não foi possível recuperar o status do projeto')
             }
 
             if (response.projectStatus.status !== "SUCCESS") {
+                clearInterval(interval)
                 throw new Error(`Quality Gate Status: ${response.projectStatus.status}`)
             }
 
+            clearInterval(interval)
             console.info('Quality Gate passou com sucesso')
 
         })
